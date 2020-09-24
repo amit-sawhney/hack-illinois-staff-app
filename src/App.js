@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, CssBaseline, Divider, Toolbar, Drawer, List, ListItem, ListItemText } from '@material-ui/core'
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { IconButton, AppBar, CssBaseline, Divider, Toolbar, Drawer, List, ListItem, ListItemText, Hidden } from '@material-ui/core'
 import Event from './Components/Event/Event'
+import { Menu } from '@material-ui/icons'
+
+const drawerWidth = '200px'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,18 +15,20 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 1,
   },
   drawer: {
-    width: '15%',
+    width: drawerWidth,
     flexShrink: 0,
   },
   drawerPaper: {
-    width: '15%',
+    width: drawerWidth,
   },
   drawerContainer: {
     overflow: 'auto',
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      paddingLeft: theme.spacing(25),
+    },
     margin: 'auto'
   },
   dayItem: {
@@ -36,14 +41,40 @@ const useStyles = makeStyles((theme) => ({
     color: '#ec2a39',
     borderBottom: '2px solid #ec2a39',
     paddingBottom: theme.spacing(1.5)
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+    color: 'black',
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+      fontSize: '30px'
+    },
+  },
+  toolbar: theme.mixins.toolbar,
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  image: {
+    maxWidth: "7%",
+    [theme.breakpoints.up('sm')]: {
+      width: '40px',
+      flexGrow: 1,
+    },
   }
 }));
 
-const App = () => {
+const App = (props) => {
   const classes = useStyles();
 
   const [events, setEvents] = useState([[{}]])
   const [day, setDay] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
+  const { window } = props;
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const formatTime = (unix_time) => {
     let date = new Date(unix_time * 1000 + 3600);
@@ -143,57 +174,123 @@ const App = () => {
     getEvents();
   }, []);
 
+  const container = window !== undefined ? () => window().document.body : undefined;
+
   return (
     <div className={classes.root}>
       <CssBaseline />
       <AppBar position="fixed" style={{ background: 'white' }} className={classes.appBar}>
         <Toolbar>
-          <img alt="Hack Illinois Logo" style={{ maxWidth: '7%', flexGrow: 1 }} src="https://2020.hackillinois.org/static/media/logo.01347610.svg" />
+          <IconButton
+            edge="start"
+            onClick={handleDrawerToggle}
+            className={classes.menuButton}
+          >
+            <Menu />
+          </IconButton>
+          <img alt="Hack Illinois Logo" className={classes.image} src="https://2020.hackillinois.org/static/media/logo.01347610.svg" />
         </Toolbar>
       </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <Toolbar />
-        <div className={classes.drawerContainer}>
-          <List>
-            {['Favorites'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {['August 7th', 'August 8th', 'August 9th', 'August 10th', 'August 11th', 'August 12th', 'August 13th', 'August 14th', 'August 15th'].map((text, index) => (
-              <ListItem button key={text}>
-                {index === day ? (
-                  <ListItemText className={classes.activeDay} primary={text} />
-                ) : (
-                    <ListItemText onClick={() => setDay(index)} primary={text} />
-                  )}
-              </ListItem>
-            ))}
-          </List>
-        </div>
-      </Drawer>
+      <Hidden smUp implementation="css">
+        <Drawer
+          container={container}
+          variant="temporary"
+          anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+        >
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <Toolbar />
+            <div className={classes.drawerContainer}>
+              <List>
+                {['Favorites'].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                ))}
+              </List>
+              <Divider />
+              <List>
+                {['August 7th', 'August 8th', 'August 9th', 'August 10th', 'August 11th', 'August 12th', 'August 13th', 'August 14th', 'August 15th'].map((text, index) => (
+                  <ListItem button key={text}>
+                    {index === day ? (
+                      <ListItemText className={classes.activeDay} primary={text} />
+                    ) : (
+                        <ListItemText onClick={() => setDay(index)} primary={text} />
+                      )}
+                  </ListItem>
+                ))}
+              </List>
+            </div>
+          </Drawer>
+        </Drawer>
+      </Hidden>
+      <Hidden xsDown implementation="css">
+        <Drawer
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+          variant="permanent"
+          open
+        >
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <Toolbar />
+            <div className={classes.drawerContainer}>
+              <List>
+                {['Favorites'].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                ))}
+              </List>
+              <Divider />
+              <List>
+                {['August 7th', 'August 8th', 'August 9th', 'August 10th', 'August 11th', 'August 12th', 'August 13th', 'August 14th', 'August 15th'].map((text, index) => (
+                  <ListItem button key={text}>
+                    {index === day ? (
+                      <ListItemText className={classes.activeDay} primary={text} />
+                    ) : (
+                        <ListItemText onClick={() => setDay(index)} primary={text} />
+                      )}
+                  </ListItem>
+                ))}
+              </List>
+            </div>
+          </Drawer>
+        </Drawer>
+      </Hidden>
+
       <main className={classes.content}>
         <Toolbar />
         {events[day].map(event => (
           // <p>{event.name}</p>
           <Event
-            key = {event.id}
+            key={event.id}
             name={event.name}
             start={event.startTime}
             end={event.endTime}
             description={event.description}
             type={event.eventType}
             fullTime={event.fullDate}
-            url = {event.url}
+            url={event.url}
           />
         ))}
       </main>
