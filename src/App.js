@@ -3,7 +3,7 @@ import './App.css';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { IconButton, AppBar, CssBaseline, Divider, Toolbar, Drawer, List, ListItem, ListItemText, Hidden } from '@material-ui/core'
 import Event from './Components/Event/Event'
-import { Menu } from '@material-ui/icons'
+import { Favorite, Menu } from '@material-ui/icons'
 
 const drawerWidth = '200px'
 
@@ -66,8 +66,11 @@ const useStyles = makeStyles((theme) => ({
 const App = (props) => {
   const classes = useStyles();
 
+  // displaying the correct event state variables
   const [events, setEvents] = useState([[{}]])
   const [day, setDay] = useState(0);
+
+  // Responsiveness state variables
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const { window } = props;
@@ -76,6 +79,15 @@ const App = (props) => {
     setMobileOpen(!mobileOpen);
   };
 
+  /*
+   * Converts unix time to a user friendly readable time
+   * @param: unix time
+   * @return: an array with 4 values:
+   *    the time of day in form HH:MM AM/PM
+   *    the day of the week: Sunday - Saturday
+   *    the month of the year: January - December
+   *    the day of the month: 1 - 31 
+  */
   const formatTime = (unix_time) => {
     let date = new Date(unix_time * 1000 + 3600);
     let hours = date.getHours();
@@ -98,6 +110,14 @@ const App = (props) => {
     return [formattedTime, dayOfWeek[day], monthOfYear[month], dayOfMonth];
   }
 
+  /*
+   * Called on website load through useEffect hook
+   * makes API call to hack illinois schedule to pull data
+   * creates a new json object per an object of the respones entity with needed data
+   * Functionality: searches for link within description
+   * @return: returns an array of array of objects where each subarray corresponds to the day and 
+   *          stores the events on that day
+  */
   async function getEvents() {
     const response = await fetch('https://api.hackillinois.org/event/');
     const json = await response.json();
@@ -123,15 +143,14 @@ const App = (props) => {
         url: "",
       }
 
-      if (event.sponsor.length > 0) {
-        console.log("hi")
-      }
-
       if (new_json.eventType === "OTHER") {
         new_json.eventType = "";
       } else {
         new_json.eventType = `(${new_json.eventType})`
       }
+
+      // url search in description
+
       let url_idx = new_json.description.indexOf('http');
       if (url_idx !== -1) {
         let url = new_json.description.substr(url_idx);
@@ -146,6 +165,10 @@ const App = (props) => {
 
       modified_json.push(new_json);
     });
+
+    // sorts the json
+    // TODO: check to see if this sort is necessary
+
     modified_json.sort(function (a, b) {
       return a.unix - b.unix;
     })
@@ -153,6 +176,8 @@ const App = (props) => {
     let sorted_json = [];
     let first_day = 7;
     let temp = [];
+
+    // modifying json object to be separated into groups based on day
 
     modified_json.forEach(event => {
       if (parseInt(event.dayOfMonth) === first_day) {
@@ -170,11 +195,46 @@ const App = (props) => {
     setEvents(sorted_json);
   }
 
+  // called on load
   useEffect(() => {
     getEvents();
   }, []);
 
+  // Responsiveness
   const container = window !== undefined ? () => window().document.body : undefined;
+
+  const drawer = (
+    <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <Toolbar />
+            <div className={classes.drawerContainer}>
+              <List>
+                {['Favorites'].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                ))}
+              </List>
+              <Divider />
+              <List>
+                {['August 7th', 'August 8th', 'August 9th', 'August 10th', 'August 11th', 'August 12th', 'August 13th', 'August 14th', 'August 15th'].map((text, index) => (
+                  <ListItem button key={text}>
+                    {index === day ? (
+                      <ListItemText className={classes.activeDay} primary={text} />
+                    ) : (
+                        <ListItemText onClick={() => setDay(index)} primary={text} />
+                      )}
+                  </ListItem>
+                ))}
+              </List>
+            </div>
+          </Drawer>
+  );
 
   return (
     <div className={classes.root}>
@@ -205,36 +265,7 @@ const App = (props) => {
             keepMounted: true, // Better open performance on mobile.
           }}
         >
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            <Toolbar />
-            <div className={classes.drawerContainer}>
-              <List>
-                {['Favorites'].map((text, index) => (
-                  <ListItem button key={text}>
-                    <ListItemText primary={text} />
-                  </ListItem>
-                ))}
-              </List>
-              <Divider />
-              <List>
-                {['August 7th', 'August 8th', 'August 9th', 'August 10th', 'August 11th', 'August 12th', 'August 13th', 'August 14th', 'August 15th'].map((text, index) => (
-                  <ListItem button key={text}>
-                    {index === day ? (
-                      <ListItemText className={classes.activeDay} primary={text} />
-                    ) : (
-                        <ListItemText onClick={() => setDay(index)} primary={text} />
-                      )}
-                  </ListItem>
-                ))}
-              </List>
-            </div>
-          </Drawer>
+         {drawer}
         </Drawer>
       </Hidden>
       <Hidden xsDown implementation="css">
@@ -245,36 +276,7 @@ const App = (props) => {
           variant="permanent"
           open
         >
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            <Toolbar />
-            <div className={classes.drawerContainer}>
-              <List>
-                {['Favorites'].map((text, index) => (
-                  <ListItem button key={text}>
-                    <ListItemText primary={text} />
-                  </ListItem>
-                ))}
-              </List>
-              <Divider />
-              <List>
-                {['August 7th', 'August 8th', 'August 9th', 'August 10th', 'August 11th', 'August 12th', 'August 13th', 'August 14th', 'August 15th'].map((text, index) => (
-                  <ListItem button key={text}>
-                    {index === day ? (
-                      <ListItemText className={classes.activeDay} primary={text} />
-                    ) : (
-                        <ListItemText onClick={() => setDay(index)} primary={text} />
-                      )}
-                  </ListItem>
-                ))}
-              </List>
-            </div>
-          </Drawer>
+          {drawer}
         </Drawer>
       </Hidden>
 
