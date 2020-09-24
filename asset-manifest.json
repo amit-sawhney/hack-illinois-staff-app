@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/hack-illinois-staff-app/static/css/main.d3f8c0c2.chunk.css",
+    "main.js": "/hack-illinois-staff-app/static/js/main.cacc7e30.chunk.js",
+    "main.js.map": "/hack-illinois-staff-app/static/js/main.cacc7e30.chunk.js.map",
+    "runtime-main.js": "/hack-illinois-staff-app/static/js/runtime-main.be0f3803.js",
+    "runtime-main.js.map": "/hack-illinois-staff-app/static/js/runtime-main.be0f3803.js.map",
+    "static/js/2.e7b1afec.chunk.js": "/hack-illinois-staff-app/static/js/2.e7b1afec.chunk.js",
+    "static/js/2.e7b1afec.chunk.js.map": "/hack-illinois-staff-app/static/js/2.e7b1afec.chunk.js.map",
+    "index.html": "/hack-illinois-staff-app/index.html",
+    "precache-manifest.5561982caf0ab6cd97e1f6ef49cd1fa9.js": "/hack-illinois-staff-app/precache-manifest.5561982caf0ab6cd97e1f6ef49cd1fa9.js",
+    "service-worker.js": "/hack-illinois-staff-app/service-worker.js",
+    "static/css/main.d3f8c0c2.chunk.css.map": "/hack-illinois-staff-app/static/css/main.d3f8c0c2.chunk.css.map",
+    "static/js/2.e7b1afec.chunk.js.LICENSE.txt": "/hack-illinois-staff-app/static/js/2.e7b1afec.chunk.js.LICENSE.txt",
+    "static/media/defaultIcon.svg": "/hack-illinois-staff-app/static/media/defaultIcon.7798c8e5.svg",
+    "static/media/mealIcon.svg": "/hack-illinois-staff-app/static/media/mealIcon.2e876477.svg",
+    "static/media/miniEvent.svg": "/hack-illinois-staff-app/static/media/miniEvent.a09af525.svg",
+    "static/media/speakerIcon.svg": "/hack-illinois-staff-app/static/media/speakerIcon.c04ed547.svg",
+    "static/media/workshopIcon.svg": "/hack-illinois-staff-app/static/media/workshopIcon.69524b38.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.be0f3803.js",
+    "static/js/2.e7b1afec.chunk.js",
+    "static/css/main.d3f8c0c2.chunk.css",
+    "static/js/main.cacc7e30.chunk.js"
+  ]
+}
