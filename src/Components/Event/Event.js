@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, Divider, Link, Paper, Typography } from '@material-ui/core'
+import { Avatar, Button, Divider, IconButton, Link, Paper, Typography, Zoom } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import mealIcon from '../../mealIcon.svg'
 import miniEvent from '../../miniEvent.svg';
 import workshopIcon from '../../workshopIcon.svg';
 import speakerIcon from '../../speakerIcon.svg';
 import defaultIcon from '../../defaultIcon.svg';
+import { Favorite, FavoriteBorder } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,15 +21,35 @@ const useStyles = makeStyles((theme) => ({
         width: theme.spacing(5),
         marginLeft: theme.spacing(1),
     },
-    time: {
-        
+    footer: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    favoriteIcon: {
+        marginRight: 0,
+        marginLeft: 'auto',
+        color: '#F59EA5',
+        fontSize: '40px'
     }
 }));
 
 const Event = (props) => {
     const classes = useStyles();
     const [icon, setIcon] = useState();
+    const [favorite, setFavorite] = useState(<FavoriteBorder className={classes.favoriteIcon} />)
 
+
+    const changeFavoriteStatus = (element) => {
+        if (element.type.displayName === "FavoriteBorderIcon") {
+            setFavorite(
+                <Zoom in={true}>
+                    <Favorite className={classes.favoriteIcon} />
+                </Zoom>
+            )
+        } else {
+            setFavorite(<FavoriteBorder className={classes.favoriteIcon} />)
+        }
+    }
 
     const title = `${props.name} ${props.type}`
 
@@ -52,11 +73,7 @@ const Event = (props) => {
                 <Typography style={{ flexGrow: 1 }} variant="h6">
                     {title}
                 </Typography>
-                <Link href = {props.url}>
-                    <Button>
-                        Join Livestream
-                    </Button>
-                </Link>
+
                 <Typography className={classes.time} variant="h6">
                     {props.fullTime}
                 </Typography>
@@ -69,6 +86,22 @@ const Event = (props) => {
                 <Typography paragraph>
                     {props.description}
                 </Typography>
+            </div>
+            <div className={classes.footer}>
+                {
+                    props.url !== "" ? (
+                        <Button style={{ flexGrow: 1, background: "#F59EA5" }} href={props.url} target="_blank" variant="contained">
+                            <Typography variant="body1">
+                                Join Livestream
+                    </Typography>
+                        </Button>
+                    ) : (
+                            <></>
+                        )
+                }
+                <IconButton onClick={() => changeFavoriteStatus(favorite)} className={classes.favoriteIcon}>
+                    {favorite}
+                </IconButton>
             </div>
         </Paper>
     );
