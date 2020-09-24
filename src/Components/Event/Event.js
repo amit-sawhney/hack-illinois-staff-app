@@ -37,17 +37,20 @@ const Event = (props) => {
     const classes = useStyles();
     const [icon, setIcon] = useState();
     const [favorite, setFavorite] = useState(<FavoriteBorder className={classes.favoriteIcon} />)
+    const [favoriteStatus, setFavoriteStatus] = useState(true);
 
 
-    const changeFavoriteStatus = (element) => {
-        if (element.type.displayName === "FavoriteBorderIcon") {
+    const changeFavoriteStatus = (status) => {
+        if (status) {
             setFavorite(
                 <Zoom in={true}>
                     <Favorite className={classes.favoriteIcon} />
                 </Zoom>
             )
+            setFavoriteStatus(false)
         } else {
             setFavorite(<FavoriteBorder className={classes.favoriteIcon} />)
+            setFavoriteStatus(true)
         }
     }
 
@@ -99,7 +102,7 @@ const Event = (props) => {
                             <></>
                         )
                 }
-                <IconButton onClick={() => changeFavoriteStatus(favorite)} className={classes.favoriteIcon}>
+                <IconButton onClick={() => changeFavoriteStatus(favoriteStatus)} className={classes.favoriteIcon}>
                     {favorite}
                 </IconButton>
             </div>
