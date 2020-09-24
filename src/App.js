@@ -3,7 +3,7 @@ import './App.css';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { IconButton, AppBar, CssBaseline, Divider, Toolbar, Drawer, List, ListItem, ListItemText, Hidden } from '@material-ui/core'
 import Event from './Components/Event/Event'
-import { Favorite, Menu } from '@material-ui/icons'
+import { Menu } from '@material-ui/icons'
 
 const drawerWidth = '200px'
 
