@@ -150,6 +150,7 @@ const App = (props) => {
       }
 
       // url search in description
+      // ideally the Rest API sending the Response Entity should have url as a separate field
 
       let url_idx = new_json.description.indexOf('http');
       if (url_idx !== -1) {
@@ -157,6 +158,7 @@ const App = (props) => {
         if (url.substr(-1) === "!") {
           url = url.substr(0, url.length - 1)
         }
+        url = url.split("\n")[0]
         new_json.url = url;
       }
 
